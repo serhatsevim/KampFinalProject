@@ -1,15 +1,20 @@
-using Core.Aspect.Autofac.Validation;
-using Core.Utilities.Results;
 using Business.Abstract;
+using Business.BusinessAspects.Autofac;
+using Business.CCS;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
-using Entites.Concrete;
-using Entites.DTOs;
+using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
+using Core.Utilities.Results;
+using DataAccess.Abstract;
+using DataAccess.Concrete.InMemory;
+using Entities.Concrete;
+using Entities.DTOs;
 using FluentValidation;
-using System.Linq;
-using System.Linq.Expressions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Business.Concrete
@@ -24,7 +29,8 @@ namespace Business.Concrete
 			_productDal = productDal;
 			_categoryService = categoryService;
 		}
-				
+
+		[SecuredOperation("product.add, admin")]
 		[ValidationAspect(typeof(ProductValidator)]
 		public IResult Add(Product product)
 		{
