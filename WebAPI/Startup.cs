@@ -42,11 +42,11 @@ namespace WebAPI
             //AOP
             //Postsharp
             services.AddControllers();
-			//services.AddSingleton<IProductService,ProductManager>();
-			//services.AddSingleton<IProductDal,EfProductDal>();
+            //services.AddSingleton<IProductService,ProductManager>();
+            //services.AddSingleton<IProductDal, EfProductDal>();
 
-			services.AddCors();
-			
+            services.AddCors();
+
             var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -63,12 +63,12 @@ namespace WebAPI
                         IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
                     };
                 });
-				
-            services.AddDependenyResolvers(new ICoreModule[]{
-				new CoreModule()
-			});
 
-		}
+            services.AddDependencyResolvers(new ICoreModule[] {
+               new CoreModule()
+            });
+
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -77,15 +77,16 @@ namespace WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.ConfigureCustomExceptionMiddleware();
 
-			app.UseCors(builder=>builder.WithOrigins("http://localhost:4200").AllowAnyHeader());
-			
+            app.UseCors(builder=>builder.WithOrigins("http://localhost:4200").AllowAnyHeader());
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
-			app.UserAuthentication();
-			
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
